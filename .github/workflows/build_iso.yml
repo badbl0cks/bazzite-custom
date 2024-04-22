@@ -33,7 +33,7 @@ jobs:
         id: generate-tag
         shell: bash
         run: |
-          TAG="latest"
+          TAG="testing"
 
           if [[ "${{ github.ref_name }}" == "testing" ]]; then
               TAG="testing"
