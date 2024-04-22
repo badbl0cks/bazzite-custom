@@ -51,9 +51,23 @@ jobs:
           for TAG in "${BUILD_TAGS[@]}"; do
               BUILD_TAGS+=("${TAG}-${TIMESTAMP}")
           done
+          
+          if [[ ${{ github.ref_name }} == "unstable" ]]; then
+             BUILD_TAGS+=("${MAJOR_VERSION}-unstable" "${MAJOR_VERSION}-unstable-${TIMESTAMP}")
+             BUILD_TAGS+=("unstable")
+             fi
+          elif [[ ${{ github.ref_name }} == "testing" ]]; then
+             BUILD_TAGS+=("${MAJOR_VERSION}-testing" "${MAJOR_VERSION}-testing-${TIMESTAMP}")
+             BUILD_TAGS+=("testing")
+             fi
+          else
+             BUILD_TAGS+=("${MAJOR_VERSION}" "${MAJOR_VERSION}-${TIMESTAMP}")
+             BUILD_TAGS+=("${MAJOR_VERSION}-stable" "${MAJOR_VERSION}-stable-${TIMESTAMP}")
+             BUILD_TAGS+=("latest" "stable")
+             fi
+          fi
 
           BUILD_TAGS+=("${TIMESTAMP}")
-          BUILD_TAGS+=("latest")
 
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
               echo "Generated the following commit tags: "
