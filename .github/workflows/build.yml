@@ -114,7 +114,7 @@ jobs:
           build_args: |
             SOURCE_IMAGE=${{ env.SOURCE_IMAGE }}
             SOURCE_SUFFIX=${{ env.SOURCE_SUFFIX }}
-            FEDORA_VERSION=${{ env.MAJOR_VERSION }}-${{ VERSION_SUFFIX }}
+            FEDORA_VERSION=${{ env.MAJOR_VERSION }}-${{ env.VERSION_SUFFIX }}
           tags: |
             ${{ steps.generate-tags.outputs.alias_tags }}
           labels: ${{ steps.meta.outputs.labels }}
