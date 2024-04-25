@@ -111,7 +111,7 @@ jobs:
           # Postfix image name with -custom to make it a little more descriptive
           # Syntax: https://docs.github.com/en/actions/learn-github-actions/expressions#format
           image: ${{ env.MY_IMAGE_NAME }}
-          build_args: |
+          build-args: |
             SOURCE_IMAGE=${{ env.SOURCE_IMAGE }}
             SOURCE_SUFFIX=${{ env.SOURCE_SUFFIX }}
             FEDORA_VERSION=${{ env.MAJOR_VERSION }}-${{ env.VERSION_SUFFIX }}
