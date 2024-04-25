@@ -5,7 +5,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: '05 10 * * *'  # 10:05am UTC everyday
+    - cron: '05 10 * * 0'  # 10:05am UTC every Sunday
   push:
     branches:
       - main
@@ -17,6 +17,9 @@ env:
   MY_IMAGE_NAME: "bazzite-gnome-custom"  # the name of the image produced by this build
   MY_IMAGE_DESC: "My Customized Bazzite System Image"
   MAJOR_VERSION: "40"
+  SOURCE_IMAGE: "bazzite"
+  SOURCE_SUFFIX: "-gnome"
+  VERSION_SUFFIX: "stable"
   IMAGE_REGISTRY: "ghcr.io/${{ github.repository_owner }}"  # do not edit
 
 jobs:
@@ -108,6 +111,10 @@ jobs:
           # Postfix image name with -custom to make it a little more descriptive
           # Syntax: https://docs.github.com/en/actions/learn-github-actions/expressions#format
           image: ${{ env.MY_IMAGE_NAME }}
+          build_args: |
+            SOURCE_IMAGE=${{ env.SOURCE_IMAGE }}
+            SOURCE_SUFFIX=${{ env.SOURCE_SUFFIX }}
+            FEDORA_VERSION=${{ env.MAJOR_VERSION }}-${{ VERSION_SUFFIX }}
           tags: |
             ${{ steps.generate-tags.outputs.alias_tags }}
           labels: ${{ steps.meta.outputs.labels }}
