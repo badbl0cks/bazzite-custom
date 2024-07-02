@@ -28,7 +28,10 @@ rpm-ostree install \
         gstreamer1-plugins-base \
         gstreamer1-plugins-base-tools \
         wireguard-tools \
-        trash-cli
+        trash-cli \
+        git \
+        git-credential-libsecret
+        
 
 # this would install a package from rpmfusion
 #rpm-ostree install vlc
