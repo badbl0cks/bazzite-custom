@@ -14,7 +14,6 @@ RELEASE="$(rpm -E %fedora)"
 
 # from fedora repos
 rpm-ostree install \
-#        freeipa-client \
         usbguard \
         zsh \
         libvirt \
