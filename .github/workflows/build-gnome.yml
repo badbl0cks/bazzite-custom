@@ -1,5 +1,5 @@
 ---
-name: build-ublue-custom
+name: build-bazzite-gnome-stable-40
 on:
   pull_request:
     branches:
@@ -15,7 +15,7 @@ on:
 
 env:
   MY_IMAGE_NAME: "bazzite-gnome-custom"  # the name of the image produced by this build
-  MY_IMAGE_DESC: "My Customized Bazzite System Image"
+  MY_IMAGE_DESC: "badblocks's custom bazzite-gnome build"
   MAJOR_VERSION: "40"
   SOURCE_IMAGE: "bazzite"
   SOURCE_SUFFIX: "-gnome"
