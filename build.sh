@@ -13,6 +13,7 @@ RELEASE="$(rpm -E %fedora)"
 # https://mirrors.rpmfusion.org/mirrorlist?path=free/fedora/updates/39/x86_64/repoview/index.html&protocol=https&redirect=1
 
 # from fedora repos
+# NOTE: for now freeipa-client must be layered AFTER installation to work
 rpm-ostree install \
         usbguard \
         zsh \
