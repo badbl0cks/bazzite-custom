@@ -30,8 +30,8 @@ rpm-ostree install \
         wireguard-tools \
         trash-cli \
         git \
-        git-credential-libsecret
-        
+        git-credential-libsecret \
+        gtk-murrine-engine
 
 # from rpmfusion
 rpm-ostree install vlc
