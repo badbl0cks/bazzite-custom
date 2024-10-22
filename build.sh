@@ -31,7 +31,11 @@ rpm-ostree install \
         trash-cli \
         git \
         git-credential-libsecret \
-        gtk-murrine-engine
+        gtk-murrine-engine \
+        sunshine \
+        firewall-config \
+        alsa-tools \
+        libappstream-glib
 
 # from rpmfusion
 rpm-ostree install vlc
