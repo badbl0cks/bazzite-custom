@@ -32,7 +32,6 @@ rpm-ostree install \
         git \
         git-credential-libsecret \
         gtk-murrine-engine \
-        sunshine \
         firewall-config \
         alsa-tools \
         libappstream-glib
