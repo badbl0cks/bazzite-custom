@@ -34,7 +34,10 @@ rpm-ostree install \
         gtk-murrine-engine \
         firewall-config \
         alsa-tools \
-        libappstream-glib
+        libappstream-glib \
+        bashtop \
+        htop \
+        glances
 
 # from rpmfusion
 rpm-ostree install vlc
