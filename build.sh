@@ -35,9 +35,10 @@ rpm-ostree install \
         firewall-config \
         alsa-tools \
         libappstream-glib \
-        bashtop \
         htop \
-        glances
+        glances \
+        task
+
 
 # from rpmfusion
 rpm-ostree install vlc
