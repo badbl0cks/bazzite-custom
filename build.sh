@@ -39,10 +39,8 @@ rpm-ostree install \
         htop \
         glances
 
-# from dnf groups (specify in build.yml)
-if [ -n "$GROUP_PKGS"]; then
-    rpm-ostree install $GROUP_PKGS
-fi
+# from dnf groups (gh actions will translate this to rpm-ostree install <pkgs>)
+rpm-ostree groupinstall "C Development Tools and Libraries" "Development Tools"
 
 # from rpmfusion
 rpm-ostree install vlc

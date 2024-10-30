@@ -19,20 +19,42 @@ env:
   IMAGE_REGISTRY: "ghcr.io/${{ github.repository_owner }}"  # do not edit
 
 jobs:
+  read_groups:
+    name: Read RPM groups from build.sh
+    runs-on: ubuntu-latest
+    outputs:
+      groups: ${{ steps.extract_groups.outputs.result }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Extract quoted groups
+        id: extract_groups
+        run: |
+          # Find the rpm-ostree groupinstall lines and extract quoted strings
+          VALUE=$(grep '^rpm-ostree groupinstall' build.sh | grep -o '"[^"]*"' | tr '\n' ' ')
+          echo "result=$VALUE" >> "$GITHUB_OUTPUT"
+
   get_pkg_lists:
     name: Retrieve group package lists from fedora:latest dnf group list
     runs-on: ubuntu-latest
     container: fedora:latest
+    needs: read_groups
     outputs:
       GROUP_PKGS: ${{ steps.get_pkg_list.outputs.result }}
     steps:
-      - id: get_pkg_list
+      - name: Get package lists from specified groups
         run: |
-          echo result=$((dnf group info "C Development Tools and Libraries" && dnf group info "Development Tools") | grep -v : | tr -d '\n' | tr -s '  ' | cut -c2-) > "$GITHUB_OUTPUT"
-  
+          read -r -a GROUPS <<< ${{ needs.read_groups.outputs.groups }}
+          
+          for GROUP in "${GROUPS[@]}"; do
+            dnf group info "$GROUP" | grep -v : | tr -d '\n' | tr -s '  ' | cut -c2- >> "$GITHUB_OUTPUT"
+          done
+
   build_push:
     name: Build and push image
     runs-on: ubuntu-24.04
+    needs: get_pkg_lists
 
     permissions:
       contents: read
@@ -46,6 +68,10 @@ jobs:
 
       - name: Maximize build space
         uses: ublue-os/remove-unwanted-software@v7
+
+      - name: Replace groupinstall <groups> with install <pkgs> in build.sh
+        run: |
+          sed "s/^rpm-ostree groupinstall.*/rpm-ostree install ${{ needs.get_pkg_lists.outputs.group_pkgs }}/" build.sh
 
       - name: Generate tags
         id: generate-tags
@@ -119,8 +145,6 @@ jobs:
           # Postfix image name with -custom to make it a little more descriptive
           # Syntax: https://docs.github.com/en/actions/learn-github-actions/expressions#format
           image: ${{ env.MY_IMAGE_NAME }}
-          build-args: |
-            GROUP_PKGS=${{ env.GROUP_PKGS }}
           tags: |
             ${{ steps.generate-tags.outputs.alias_tags }}
           labels: ${{ steps.meta.outputs.labels }}
