@@ -1,6 +1,7 @@
 #!/bin/sh
 
-set -ouex pipefail
+set -oex pipefail
+set +u
 
 RELEASE="$(rpm -E %fedora)"
 
@@ -36,9 +37,12 @@ rpm-ostree install \
         alsa-tools \
         libappstream-glib \
         htop \
-        glances \
-        task
+        glances
 
+# from dnf groups (specify in build.yml)
+if [ -n "$GROUP_PKGS"]; then
+    rpm-ostree install $GROUP_PKGS
+fi
 
 # from rpmfusion
 rpm-ostree install vlc

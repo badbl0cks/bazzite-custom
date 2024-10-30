@@ -19,6 +19,17 @@ env:
   IMAGE_REGISTRY: "ghcr.io/${{ github.repository_owner }}"  # do not edit
 
 jobs:
+  get_pkg_lists:
+    name: Retrieve group package lists from fedora:latest dnf group list
+    runs-on: ubuntu-latest
+    container: fedora:latest
+    outputs:
+      GROUP_PKGS: ${{ steps.get_pkg_list.outputs.result }}
+    steps:
+      - id: get_pkg_list
+        run: |
+          echo result=$((dnf group info "C Development Tools and Libraries" && dnf group info "Development Tools") | grep -v : | tr -d '\n' | tr -s '  ' | cut -c2-) > "$GITHUB_OUTPUT"
+  
   build_push:
     name: Build and push image
     runs-on: ubuntu-24.04
@@ -108,6 +119,8 @@ jobs:
           # Postfix image name with -custom to make it a little more descriptive
           # Syntax: https://docs.github.com/en/actions/learn-github-actions/expressions#format
           image: ${{ env.MY_IMAGE_NAME }}
+          build-args: |
+            GROUP_PKGS=${{ env.GROUP_PKGS }}
           tags: |
             ${{ steps.generate-tags.outputs.alias_tags }}
           labels: ${{ steps.meta.outputs.labels }}
