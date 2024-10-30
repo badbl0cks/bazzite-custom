@@ -1,11 +1,11 @@
 ---
-name: build-bazzite-gnome-stable-40
+name: build-bazzite-gnome
 on:
   pull_request:
     branches:
       - main
   schedule:
-    - cron: '05 10 * * 0'  # 10:05am UTC every Sunday
+    - cron: '05 05 * * '  # 05:05am UTC everyday
   push:
     branches:
       - main
@@ -14,18 +14,16 @@ on:
   workflow_dispatch:
 
 env:
-  MY_IMAGE_NAME: "bazzite-gnome-custom"  # the name of the image produced by this build
-  MY_IMAGE_DESC: "badblocks's custom bazzite-gnome build"
-  MAJOR_VERSION: "40"
   SOURCE_IMAGE: "bazzite"
   SOURCE_SUFFIX: "-gnome"
-  VERSION_SUFFIX: "stable"
+  MY_IMAGE_NAME: "${{SOURCE_IMAGE}}-badblocks-gnome"  # the name of the image produced by this build
+  MY_IMAGE_DESC: "badblocks's custom bazzite-gnome build"
   IMAGE_REGISTRY: "ghcr.io/${{ github.repository_owner }}"  # do not edit
 
 jobs:
   build_push:
     name: Build and push image
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     permissions:
       contents: read
@@ -35,7 +33,10 @@ jobs:
     steps:
       # Checkout push-to-registry action GitHub repository
       - name: Checkout Push to Registry action
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Maximize build space
+        uses: ublue-os/remove-unwanted-software@v7
 
       - name: Generate tags
         id: generate-tags
@@ -55,20 +56,18 @@ jobs:
           for TAG in "${BUILD_TAGS[@]}"; do
               BUILD_TAGS+=("${TAG}-${TIMESTAMP}")
           done
-          
-          if [[ ${{ github.ref_name }} == "unstable" ]]; then
-             BUILD_TAGS+=("${MAJOR_VERSION}-unstable" "${MAJOR_VERSION}-unstable-${TIMESTAMP}")
-             BUILD_TAGS+=("unstable")
-          elif [[ ${{ github.ref_name }} == "testing" ]]; then
-             BUILD_TAGS+=("${MAJOR_VERSION}-testing" "${MAJOR_VERSION}-testing-${TIMESTAMP}")
-             BUILD_TAGS+=("testing")
-          else
-             BUILD_TAGS+=("${MAJOR_VERSION}" "${MAJOR_VERSION}-${TIMESTAMP}")
-             BUILD_TAGS+=("${MAJOR_VERSION}-stable" "${MAJOR_VERSION}-stable-${TIMESTAMP}")
-             BUILD_TAGS+=("latest" "stable")
-          fi
 
           BUILD_TAGS+=("${TIMESTAMP}")
+          if [[ ${{ github.ref_name }} == "unstable" ]]; then
+             BUILD_TAGS+=("unstable")
+             SOURCE_VERSION="unstable"
+          elif [[ ${{ github.ref_name }} == "testing" ]]; then
+             BUILD_TAGS+=("testing")
+             SOURCE_VERSION="testing"
+          else
+             BUILD_TAGS+=("latest" "stable")
+             SOURCE_VERSION="latest"
+          fi
 
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
               echo "Generated the following commit tags: "
@@ -90,7 +89,7 @@ jobs:
 
       # Build metadata
       - name: Image Metadata
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         id: meta
         with:
           images: |
@@ -114,7 +113,7 @@ jobs:
           build-args: |
             SOURCE_IMAGE=${{ env.SOURCE_IMAGE }}
             SOURCE_SUFFIX=${{ env.SOURCE_SUFFIX }}
-            FEDORA_VERSION=${{ env.MAJOR_VERSION }}-${{ env.VERSION_SUFFIX }}
+            FEDORA_VERSION=${{ env.SOURCE_VERSION }}
           tags: |
             ${{ steps.generate-tags.outputs.alias_tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -124,12 +123,12 @@ jobs:
       # https://github.com/macbre/push-to-ghcr/issues/12
       - name: Lowercase Registry
         id: registry_case
-        uses: ASzc/change-string-case-action@v5
+        uses: ASzc/change-string-case-action@v6
         with:
           string: ${{ env.IMAGE_REGISTRY }}
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -150,13 +149,13 @@ jobs:
           extra-args: |
             --disable-content-trust
 
-      # This section is optional and only needs to be enabled in you plan on distributing
-      # your project to others to consume. You will need to create a public and private key
+      # This section is optional and only needs to be enabled if you plan on distributing
+      # your project for others to consume. You will need to create a public and private key
       # using Cosign and save the private key as a repository secret in Github for this workflow
       # to consume. For more details, review the image signing section of the README.
 
       # Sign container
-      - uses: sigstore/cosign-installer@v3.4.0
+      - uses: sigstore/cosign-installer@v3.5.0
         if: github.event_name != 'pull_request'
 
       - name: Sign container image
