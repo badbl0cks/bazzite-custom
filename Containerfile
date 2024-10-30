@@ -35,7 +35,7 @@ ARG SOURCE_IMAGE="bazzite"
 # - (and the above with testing rather than stable)
 ARG SOURCE_SUFFIX="-gnome"
 
-## FEDORA_VERSION arg must be a version built by ublue: eg, 39 or 40
+## FEDORA_VERSION arg must be a version built by ublue
 ARG FEDORA_VERSION="latest"
 
 
