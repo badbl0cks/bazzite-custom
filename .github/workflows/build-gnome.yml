@@ -22,39 +22,100 @@ jobs:
   read_groups:
     name: Read RPM groups from build.sh
     runs-on: ubuntu-latest
+    container: fedora:latest
     outputs:
-      groups: ${{ steps.extract_groups.outputs.result }}
+      group_pkgs: ${{ steps.extract_groups.outputs.result }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
       
       - name: Extract quoted groups
         id: extract_groups
-        run: |
+        shell: bash
+        run: |       
           # Find the rpm-ostree groupinstall lines and extract quoted strings
           VALUE=$(grep '^rpm-ostree groupinstall' build.sh | grep -o '"[^"]*"' | tr '\n' ' ')
-          echo "result=$VALUE" >> "$GITHUB_OUTPUT"
-
-  get_pkg_lists:
-    name: Retrieve group package lists from fedora:latest dnf group list
-    runs-on: ubuntu-latest
-    container: fedora:latest
-    needs: read_groups
-    outputs:
-      GROUP_PKGS: ${{ steps.get_pkg_list.outputs.result }}
-    steps:
-      - name: Get package lists from specified groups
-        run: |
-          read -r -a GROUPS <<< ${{ needs.read_groups.outputs.groups }}
+          echo "Extracted VALUE: $VALUE"
           
-          for GROUP in "${GROUPS[@]}"; do
-            dnf group info "$GROUP" | grep -v : | tr -d '\n' | tr -s '  ' | cut -c2- >> "$GITHUB_OUTPUT"
+          if [ -z "$VALUE" ]; then
+            echo "No groups found in build.sh"
+            echo "result=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Initialize an empty array
+          declare -a GROUP_ARRAY
+
+          # Use read with a custom delimiter to split the input string
+          while IFS='"' read -ra parts; do
+              for part in "${parts[@]}"; do
+                  # Trim leading and trailing spaces and check if the part is not empty
+                  trimmed=$(echo "$part" | xargs)
+                  if [[ -n "$trimmed" ]]; then
+                      GROUP_ARRAY+=("$trimmed")
+                  fi
+              done
+          done <<< "$VALUE"
+          echo "Raw Array without double-quotes: ${GROUP_ARRAY[@]}"
+
+          IS_DNF5=$(dnf --version | { grep -sc dnf5 || test $? = 1; })
+          echo "IS_DNF5: $IS_DNF5 (dnf4 = 0, else dnf5)"
+          echo -n result= >> "$GITHUB_OUTPUT"
+          for GROUP_E in "${GROUP_ARRAY[@]}"; do 
+            echo "Getting pkgs for group: $GROUP_E"
+            if [ "$IS_DNF5" -ne 0 ]; then
+              #dnf5
+              echo -n $(dnf group info "$GROUP_E" 2>&1 | grep -E "packages|^[[:space:]]*:" | cut -d: -f2 | tr -s ' ' | tr -d '\n' | sed 's/^ //; s/ $//') >> "$GITHUB_OUTPUT" 
+            else 
+              #dnf4
+              echo -n $(dnf group info "$GROUP_E" 2>&1 | grep -v : | tr -d '\n' | tr -s '  ' | cut -c2-) >> "$GITHUB_OUTPUT"
+            fi
           done
+
+        #run: |
+          # Find the rpm-ostree groupinstall lines and extract quoted strings
+          #VALUE=$(grep '^rpm-ostree groupinstall' build.sh | grep -o '"[^"]*"' | tr '\n' ' ')
+          #GROUPS=( $VALUE )
+          #IS_DNF5=$(dnf --version | grep -c dnf5)
+          # for GROUP in "${GROUPS[@]}"; do
+          #   if [ "$IS_DNF5" -ne 0 ]; then
+          #     #dnf5
+          #     echo $GROUP
+          #   else 
+          #     #dnf4
+          #     echo $GROUP
+          #   fi
+          # done
+          #echo "result=$VALUE" >> "$GITHUB_OUTPUT"
+
+  # get_pkg_lists:
+  #   name: Retrieve group package lists from fedora:latest dnf group list
+  #   runs-on: ubuntu-latest
+  #   container: fedora:latest
+  #   needs: read_groups
+  #   outputs:
+  #     GROUP_PKGS: ${{ steps.get_pkg_list.outputs.result }}
+  #   steps:
+  #     - name: Get package lists from specified groups
+  #       shell: bash
+  #       run: |
+  #         GROUPS=( ${{ needs.read_groups.outputs.groups }} )
+  #         IS_DNF5=$(dnf --version | grep -c dnf5)
+  #         for GROUP in "${GROUPS[@]}"; do
+  #           echo $(dnf group info "$GROUP")
+  #           if [ "$IS_DNF5" -ne 0 ]; then
+  #             #dnf5
+  #             echo "result=$(dnf group info "$GROUP" 2>&1 | grep -E "packages|^[[:space:]]*:" | cut -d: -f2 | tr -s ' ' | tr -d '\n' | sed 's/^ //; s/ $//')" >> "$GITHUB_OUTPUT" 
+  #           else 
+  #             #dnf4
+  #             echo "result=$(dnf group info "$GROUP" 2>&1 | grep -v : | tr -d '\n' | tr -s '  ' | cut -c2-)" >> "$GITHUB_OUTPUT"
+  #           fi
+  #         done
 
   build_push:
     name: Build and push image
     runs-on: ubuntu-24.04
-    needs: get_pkg_lists
+    needs: read_groups
 
     permissions:
       contents: read
@@ -71,7 +132,7 @@ jobs:
 
       - name: Replace groupinstall <groups> with install <pkgs> in build.sh
         run: |
-          sed "s/^rpm-ostree groupinstall.*/rpm-ostree install ${{ needs.get_pkg_lists.outputs.group_pkgs }}/" build.sh
+          sed -i "s/^rpm-ostree groupinstall.*/rpm-ostree install ${{ needs.read_groups.outputs.group_pkgs }}/" build.sh
 
       - name: Generate tags
         id: generate-tags
