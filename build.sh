@@ -45,6 +45,8 @@ rpm-ostree groupinstall "C Development Tools and Libraries" "Development Tools"
 # from rpmfusion
 rpm-ostree install vlc
 
+# TODO: Add rpm building with FPM
+
 # from RPMs on Github
 # Space-separated list of repo/package strings
 repos="quexten/goldwarden"

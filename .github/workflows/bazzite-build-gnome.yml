@@ -1,5 +1,5 @@
 ---
-name: build-bazzite-gnome
+name: bazzite-build-gnome
 on:
   pull_request:
     branches:
@@ -70,6 +70,7 @@ jobs:
               #dnf4
               echo -n $(dnf group info "$GROUP_E" 2>&1 | grep -v : | tr -d '\n' | tr -s '  ' | cut -c2-) >> "$GITHUB_OUTPUT"
             fi
+            echo -n " " >> "$GITHUB_OUTPUT"
           done
 
         #run: |
