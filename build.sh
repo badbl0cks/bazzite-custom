@@ -37,7 +37,8 @@ rpm-ostree install \
         alsa-tools \
         libappstream-glib \
         htop \
-        glances
+        glances \
+        ansible
 
 # from dnf groups (gh actions will translate this to rpm-ostree install <pkgs>)
 rpm-ostree groupinstall "C Development Tools and Libraries" "Development Tools"
