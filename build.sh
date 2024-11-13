@@ -5,6 +5,8 @@ set +u
 
 RELEASE="$(rpm -E %fedora)"
 
+### Add repos
+rpm-ostree install https://download.docker.com/linux/fedora/docker-ce.repo
 
 ### Install packages
 
@@ -44,7 +46,16 @@ rpm-ostree install \
 rpm-ostree groupinstall "C Development Tools and Libraries" "Development Tools"
 
 # from rpmfusion
-rpm-ostree install vlc
+rpm-ostree install \
+        vlc
+
+# from custom repos
+rpm-ostree install \
+        docker-ce \
+        docker-ce-cli \
+        containerd.io \
+        docker-buildx-plugin \
+        docker-compose-plugin
 
 # TODO: Add rpm building with FPM
 
@@ -71,6 +82,8 @@ done
 
 
 #### Change to System Configuration Files
+# Enable docker.service
+ln -s /etc/systemd/system/docker.service /etc/systemd/system/multi-user.target.wants/
 
 # this example modifies default timeouts to prevent slow reboots from services that won't stop
 #sed -i 's/#DefaultTimeoutStopSec.*/DefaultTimeoutStopSec=15s/' /etc/systemd/user.conf
