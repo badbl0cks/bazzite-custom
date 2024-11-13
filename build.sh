@@ -6,9 +6,10 @@ set +u
 RELEASE="$(rpm -E %fedora)"
 
 ### Add repos
-rpm-ostree install https://download.docker.com/linux/fedora/docker-ce.repo
+ostree remote add docker-ce https://download.docker.com/linux/fedora/docker-ce.repo
 
 ### Refresh repos
+rpm-ostree cleanup -m
 rpm-ostree refresh-md
 
 ### Install packages
