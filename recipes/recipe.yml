@@ -5,12 +5,12 @@ base-image: ghcr.io/ublue-os/bazzite-gnome
 image-version: latest
 
 modules:
+  #- type: script
+  #  scripts:
+  #    - prepare_groupinstall.sh
   - type: script
     scripts:
-      - prepare_groupinstall.sh
-  - type: script
-    scripts:
-      - groupinstall.sh
+      #- groupinstall.sh
       - download_install_rpms.sh
   - type: files
     files:
