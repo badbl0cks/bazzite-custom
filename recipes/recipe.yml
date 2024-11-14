@@ -5,6 +5,13 @@ base-image: ghcr.io/ublue-os/bazzite-gnome
 image-version: latest
 
 modules:
+  - type: script
+    scripts:
+      - prepare_groupinstall.sh
+  - type: script
+    scripts:
+      - groupinstall.sh
+      - download_install_rpms.sh
   - type: files
     files:
       - source: system
@@ -44,9 +51,6 @@ modules:
       - containerd.io
       - docker-buildx-plugin
       - docker-compose-plugin
-  - type: script
-    scripts:
-      - download_install_rpms.sh
   - type: fonts
     fonts:
       nerd-fonts:
