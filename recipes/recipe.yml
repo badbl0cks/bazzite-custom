@@ -1,0 +1,101 @@
+name: bazzite-badblocks-gnome
+description: badblocks's custom bazzite-gnome build
+
+base-image: ghcr.io/ublue-os/bazzite-gnome
+image-version: latest 
+
+modules:
+  - type: files
+    files:
+      - source: system
+        destination: / 
+  - type: rpm-ostree
+    repos:
+       - https://download.docker.com/linux/fedora/docker-ce.repo
+    keys:
+       - https://download.docker.com/linux/fedora/gpg
+    install:
+      - vlc
+      - usbguard
+      - zsh
+      - libvirt
+      - virt-manager
+      - autofs
+      - gstreamer1-plugins-ugly-free
+      - gstreamer1-plugins-bad-free
+      - gstreamer1-plugins-bad-free-extras
+      - gstreamer1-plugins-good
+      - gstreamer1-plugins-good-extras
+      - gstreamer1-plugins-base
+      - gstreamer1-plugins-base-tools
+      - wireguard-tools
+      - trash-cli
+      - git
+      - git-credential-libsecret
+      - gtk-murrine-engine
+      - firewall-config
+      - alsa-tools
+      - libappstream-glib
+      - htop
+      - glances
+      - ansible
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+  - type: script
+    scripts:
+      - download_install_rpms.sh 
+  - type: akmods
+    install:
+      - openrazer
+      - xpadneo
+      - xone
+  - type: fonts
+    fonts:
+      nerd-fonts:
+        - FiraCode # don't add spaces or "Nerd Font" suffix.
+        - Hack
+        - SourceCodePro
+        - Terminus
+        - JetBrainsMono
+        - NerdFontsSymbolsOnly
+      google-fonts:
+        - Roboto
+        - Open Sans
+  - type: gnome-extensions
+    install:
+      - 3628 # ArcMenu
+      - 1460 # Vitals
+      - 1160 # Dash to Panel
+      - 97 # Coverflow Alt-Tab
+      - 779 # Clipboard Indicator
+  - type: gschema-overrides
+    include:
+      - zz1-power-button-settings.gschema.override 
+  - type: default-flatpaks
+    notify: true # Send notification after install/uninstall is finished
+    system:
+      install:
+        - net.nokyan.Resources
+        - org.gimp.GIMP
+        - org.libreoffice.LibreOffice
+        - page.codeberg.libre_menu_editor.LibreMenuEditor
+        - us.zoom.Zoom
+    user:
+      install:
+        - com.bitwarden.desktop
+        - dev.zed.Zed
+        - dev.goats.xivlauncher
+        - com.github.zocker_160.SyncThingy
+        - io.github.vikdevelop.SaveDesktop
+        - md.obsidian.Obsidian
+        - org.strawberrymusicplayer.strawberry
+        - com.discordapp.Discord
+  - type: systemd
+    system:
+      enabled:
+        - docker.service
+  - type: signing # sets up the proper policy & signing files for signed images to work fully
+
