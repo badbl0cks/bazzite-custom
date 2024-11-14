@@ -2,13 +2,13 @@ name: bazzite-badblocks-gnome
 description: badblocks's custom bazzite-gnome build
 
 base-image: ghcr.io/ublue-os/bazzite-gnome
-image-version: latest 
+image-version: latest
 
 modules:
   - type: files
     files:
       - source: system
-        destination: / 
+        destination: /
   - type: rpm-ostree
     repos:
        - https://download.docker.com/linux/fedora/docker-ce.repo
@@ -46,12 +46,7 @@ modules:
       - docker-compose-plugin
   - type: script
     scripts:
-      - download_install_rpms.sh 
-  - type: akmods
-    install:
-      - openrazer
-      - xpadneo
-      - xone
+      - download_install_rpms.sh
   - type: fonts
     fonts:
       nerd-fonts:
