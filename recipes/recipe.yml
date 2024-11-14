@@ -72,7 +72,7 @@ modules:
       - 779 # Clipboard Indicator
   - type: gschema-overrides
     include:
-      - zz1-power-button-settings.gschema.override 
+      - zz1-power-button-settings.gschema.override
   - type: default-flatpaks
     notify: true # Send notification after install/uninstall is finished
     system:
@@ -82,6 +82,7 @@ modules:
         - org.libreoffice.LibreOffice
         - page.codeberg.libre_menu_editor.LibreMenuEditor
         - us.zoom.Zoom
+        - org.gnome.Boxes
     user:
       install:
         - com.bitwarden.desktop
