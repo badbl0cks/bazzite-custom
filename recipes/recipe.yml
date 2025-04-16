@@ -82,9 +82,6 @@ modules:
         - org.libreoffice.LibreOffice
         - page.codeberg.libre_menu_editor.LibreMenuEditor
         - us.zoom.Zoom
-        - org.gnome.Boxes
-    user:
-      install:
         - com.bitwarden.desktop
         - dev.zed.Zed
         - dev.goats.xivlauncher
@@ -93,6 +90,10 @@ modules:
         - md.obsidian.Obsidian
         - org.strawberrymusicplayer.strawberry
         - com.discordapp.Discord
+        - com.borgbase.Vorta
+        - org.mozilla.Thunderbird
+        - io.gitlab.librewolf-community
+        - io.github.ungoogled_software.ungoogled_chromium
   - type: systemd
     system:
       enabled:
