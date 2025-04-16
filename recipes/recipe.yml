@@ -18,8 +18,10 @@ modules:
         destination: /
   - type: rpm-ostree
     repos:
+       - https://packages.microsoft.com/yumrepos/vscode/config.repo
        - https://download.docker.com/linux/fedora/docker-ce.repo
     keys:
+       - https://packages.microsoft.com/keys/microsoft.asc
        - https://download.docker.com/linux/fedora/gpg
     install:
       - vlc
@@ -64,6 +66,7 @@ modules:
       - cockpit-storaged
       - gnome-boxes
       - bottles
+      - code
   - type: fonts
     fonts:
       nerd-fonts:
