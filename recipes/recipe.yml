@@ -51,6 +51,17 @@ modules:
       - containerd.io
       - docker-buildx-plugin
       - docker-compose-plugin
+      - cockpit
+      - cockpit-navigator
+      - cockpit-composer
+      - cockpit-files     
+      - cockpit-machines
+      - cockpit-networkmanager
+      - cockpit-ostree
+      - cockpit-podman
+      - cockpit-selinux
+      - cockpit-sosreport
+      - cockpit-storaged
   - type: fonts
     fonts:
       nerd-fonts:
