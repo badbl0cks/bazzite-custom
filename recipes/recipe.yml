@@ -19,7 +19,7 @@ modules:
   - type: rpm-ostree
     repos:
        - https://packages.microsoft.com/yumrepos/vscode/config.repo
-       - docker-ce_41.repo #manually use 41 until docker repo is ready with 42
+       - docker-ce_f41.repo #manually use 41 until docker repo is ready with 42
     keys:
        - https://packages.microsoft.com/keys/microsoft.asc
        - https://download.docker.com/linux/fedora/gpg
