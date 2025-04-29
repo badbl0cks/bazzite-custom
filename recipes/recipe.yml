@@ -14,8 +14,12 @@ modules:
       - download_install_rpms.sh
   - type: files
     files:
-      - source: system
-        destination: /
+      - source: system/lib/firmware/
+        destination: /lib/firmware/
+  - type: files
+    files:
+      - source: system/etc/modprobe.d/
+        destination: /etc/modprobe.d/
   - type: rpm-ostree
     repos:
        - https://packages.microsoft.com/yumrepos/vscode/config.repo
