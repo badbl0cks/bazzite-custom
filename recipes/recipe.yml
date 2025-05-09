@@ -73,7 +73,7 @@ modules:
   - type: fonts
     fonts:
       nerd-fonts:
-        - FiraCode # don't add spaces or "Nerd Font" suffix.
+        - FiraCode
         - Hack
         - SourceCodePro
         - Terminus
@@ -81,7 +81,7 @@ modules:
         - NerdFontsSymbolsOnly
       google-fonts:
         - Roboto
-        - Open Sans
+        - Lexend
   - type: gnome-extensions
     install:
       - 3628 # ArcMenu
