@@ -1,10 +1,6 @@
 modules:
-  #- type: script
-  #  scripts:
-  #    - prepare_groupinstall.sh
   - type: script
     scripts:
-      #- groupinstall.sh
       - download_install_rpms.sh
   - type: files
     files:
@@ -14,56 +10,63 @@ modules:
     files:
       - source: system/etc/modprobe.d/
         destination: /etc/modprobe.d/
-  - type: rpm-ostree
+  - type: dnf
     repos:
-       - https://packages.microsoft.com/yumrepos/vscode/config.repo
-       - docker-ce_f41.repo #manually use 41 until docker repo is ready with 42
-    keys:
-       - https://packages.microsoft.com/keys/microsoft.asc
-       - https://download.docker.com/linux/fedora/gpg
+      files:
+        - https://packages.microsoft.com/yumrepos/vscode/config.repo
+        - docker-ce.repo
+      keys:
+        - https://packages.microsoft.com/keys/microsoft.asc
+        - https://download.docker.com/linux/fedora/gpg
+    group-install:
+      with-optional: true
+      packages:
+        - development-tools
+        - c-development        
     install:
-      - vlc
-      - usbguard
-      - zsh
-      - libvirt
-      - virt-manager
-      - autofs
-      - gstreamer1-plugins-ugly-free
-      - gstreamer1-plugins-bad-free
-      - gstreamer1-plugins-bad-free-extras
-      - gstreamer1-plugins-good
-      - gstreamer1-plugins-good-extras
-      - gstreamer1-plugins-base
-      - gstreamer1-plugins-base-tools
-      - wireguard-tools
-      - trash-cli
-      - git
-      - git-credential-libsecret
-      - gtk-murrine-engine
-      - firewall-config
-      - alsa-tools
-      - libappstream-glib
-      - htop
-      - glances
-      - ansible
-      - docker-ce
-      - docker-ce-cli
-      - containerd.io
-      - docker-buildx-plugin
-      - docker-compose-plugin
-      - cockpit
-      - cockpit-composer
-      - cockpit-files     
-      - cockpit-machines
-      - cockpit-networkmanager
-      - cockpit-ostree
-      - cockpit-podman
-      - cockpit-selinux
-      - cockpit-sosreport
-      - cockpit-storaged
-      - gnome-boxes
-      - bottles
-      - code
+      packages:
+        - vlc
+        - usbguard
+        - zsh
+        - libvirt
+        - virt-manager
+        - autofs
+        - gstreamer1-plugins-ugly-free
+        - gstreamer1-plugins-bad-free
+        - gstreamer1-plugins-bad-free-extras
+        - gstreamer1-plugins-good
+        - gstreamer1-plugins-good-extras
+        - gstreamer1-plugins-base
+        - gstreamer1-plugins-base-tools
+        - wireguard-tools
+        - trash-cli
+        - git
+        - git-credential-libsecret
+        - gtk-murrine-engine
+        - firewall-config
+        - alsa-tools
+        - libappstream-glib
+        - htop
+        - glances
+        - ansible
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+        - docker-buildx-plugin
+        - docker-compose-plugin
+        - cockpit
+        - cockpit-composer
+        - cockpit-files     
+        - cockpit-machines
+        - cockpit-networkmanager
+        - cockpit-ostree
+        - cockpit-podman
+        - cockpit-selinux
+        - cockpit-sosreport
+        - cockpit-storaged
+        - gnome-boxes
+        - bottles
+        - code
   - type: fonts
     fonts:
       nerd-fonts:
@@ -87,7 +90,7 @@ modules:
     include:
       - zz1-power-button-settings.gschema.override
   - type: default-flatpaks
-    notify: true # Send notification after install/uninstall is finished
+    notify: true
     system:
       install:
         - net.nokyan.Resources
@@ -120,5 +123,5 @@ modules:
     system:
       enabled:
         - docker.service
-  - type: signing # sets up the proper policy & signing files for signed images to work fully
+  - type: signing
 
