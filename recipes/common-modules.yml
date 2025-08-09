@@ -57,18 +57,7 @@ modules:
         - containerd.io
         - docker-buildx-plugin
         - docker-compose-plugin
-        - cockpit
-        - cockpit-composer
-        - cockpit-files     
-        - cockpit-machines
-        - cockpit-networkmanager
-        - cockpit-ostree
-        - cockpit-podman
-        - cockpit-selinux
-        - cockpit-sosreport
-        - cockpit-storaged
         - gnome-boxes
-        - bottles
         - code
   - type: fonts
     fonts:
@@ -92,7 +81,7 @@ modules:
   - type: gschema-overrides
     include:
       - zz1-power-button-settings.gschema.override
-  - type: default-flatpaks
+  - type: default-flatpaks@v1
     notify: true
     system:
       install:
@@ -114,12 +103,10 @@ modules:
         - io.gitlab.librewolf-community
         - io.github.ungoogled_software.ungoogled_chromium
       remove:
-        - com.usebottles.bottles
         - org.gnome.Boxes
         - org.videolan.VLC
     user:
       remove:
-        - com.usebottles.bottles
         - org.gnome.Boxes
         - org.videolan.VLC
   - type: systemd
