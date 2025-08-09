@@ -22,11 +22,14 @@ modules:
       with-optional: true
       packages:
         - development-tools
-        - c-development        
+        - c-development
     install:
       packages:
         - vlc
         - usbguard
+        - android-tools
+        - arm-image-installer
+        - hunspell-devel
         - zsh
         - libvirt
         - virt-manager
