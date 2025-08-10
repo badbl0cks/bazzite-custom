@@ -45,6 +45,7 @@ modules:
         - trash-cli
         - git
         - git-credential-libsecret
+        - git-filter-repo
         - gtk-murrine-engine
         - firewall-config
         - alsa-tools
