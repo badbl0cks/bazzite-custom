@@ -1,7 +1,8 @@
 modules:
-  - type: script
-    scripts:
-      - download_install_rpms.sh
+  #Temp disable until we investigate why goldwarden is failing to install on F43
+  #- type: script
+  #  scripts:
+  #    - download_install_rpms.sh
   - type: files
     files:
       - source: system/lib/firmware/
