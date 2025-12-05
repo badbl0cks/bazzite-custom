@@ -16,9 +16,11 @@ modules:
       files:
         - https://packages.microsoft.com/yumrepos/vscode/config.repo
         - docker-ce.repo
+        #- https://copr.fedorainfracloud.org/coprs/lizardbyte/beta/repo/fedora-43/lizardbyte-beta-fedora.repo
       keys:
         - https://packages.microsoft.com/keys/microsoft.asc
         - https://download.docker.com/linux/fedora/gpg
+        #- https://download.copr.fedorainfracloud.org/results/lizardbyte/beta/pubkey.gpg
     group-install:
       with-optional: true
       packages:
@@ -61,6 +63,7 @@ modules:
         - docker-compose-plugin
         - gnome-boxes
         - code
+        #- sunshine
   - type: fonts
     fonts:
       nerd-fonts:
