@@ -63,6 +63,7 @@ modules:
         - docker-compose-plugin
         - gnome-boxes
         - code
+        - freeipa-client
         #- sunshine
   - type: fonts
     fonts:
