@@ -1,8 +1,4 @@
 modules:
-  #Temp disable until we investigate why goldwarden is failing to install on F43
-  #- type: script
-  #  scripts:
-  #    - download_install_rpms.sh
   - type: files
     files:
       - source: system/lib/firmware/
@@ -84,6 +80,7 @@ modules:
       - 1160 # Dash to Panel
       - 97 # Coverflow Alt-Tab
       - 779 # Clipboard Indicator
+      - 7856 # Mouse Tail
   - type: gschema-overrides
     include:
       - zz1-power-button-settings.gschema.override
